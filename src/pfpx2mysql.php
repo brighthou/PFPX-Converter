@@ -4,6 +4,8 @@
 namespace lianghou\PFPXConverter;
 
 
+use mysqli;
+
 class pfpx2mysql
 {
     /**
@@ -45,14 +47,12 @@ class pfpx2mysql
 
     /**
      * 创建用于记录PFPX导航数据的数据库结构
+     *
+     * @return void
      */
     public function createDatabase()
     {
         // 判断成员变量是否填写
-        if ($this->dbServer == NULL || $this->dbUserName == NULL || $this->dbPassword == NULL) {
-            die('调用失败：数据库地址/用户名/密码未指定');
-        }
-
         if ($this->dbName == NULL) {
             $this->dbName = 'pfpx';
         }
@@ -61,30 +61,11 @@ class pfpx2mysql
             $this->tablePrefix = 'public';
         }
 
-        $dbServer = $this->dbServer;
-        $dbUserName = $this->dbUserName;
-        $dbPassword = $this->dbPassword;
+        // 连接数据库
+        $con = $this->connectDatabase();
+
         $dbName = $this->dbName;
         $tablePrefix = $this->tablePrefix;
-
-        // 创建连接
-        $con = new \mysqli($dbServer, $dbUserName, $dbPassword);
-
-        // 检测连接
-        if ($con->connect_error) {
-            die("数据库连接失败: " . $con->connect_error);
-        }
-
-        // 初始化数据库选项
-        $sql = "SET NAMES 'UTF8'";
-        if ($con->query($sql) === TRUE) {} else {
-            die("设置数据库编码失败: " . $con->error);
-        }
-
-        $sql = "SET time_zone = '+8:00'";
-        if ($con->query($sql) === TRUE) {} else {
-            die("设置数据库时区(UTC+8)失败: " . $con->error);
-        }
 
         // 创建数据库
         $sql = "CREATE DATABASE IF NOT EXISTS `".$dbName."` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;";
@@ -227,17 +208,64 @@ class pfpx2mysql
         }
 
         // 关闭数据库连接
+        $this->closeDatabase($con);
+    }
+
+    /**
+     * 连接MySQL数据库
+     *
+     * @return mysqli MySQL连接对象，通常是$con
+     */
+    private function connectDatabase()
+    {
+        // 判断连接服务器所需的成员变量是否已指定
+        if ($this->dbServer == NULL) {
+            die('数据库连接失败：数据库地址未指定，请检查成员属性是否定义');
+        }
+
+        if ($this->dbUserName == NULL) {
+            die('数据库连接失败：数据库用户名未指定，请检查成员属性是否定义');
+        }
+
+        if ($this->dbPassword == NULL) {
+            die('数据库连接失败：数据库登录密码未指定，请检查成员属性是否定义');
+        }
+
+        $dbServer = $this->dbServer;
+        $dbUserName = $this->dbUserName;
+        $dbPassword = $this->dbPassword;
+
+        // 创建连接
+        $con = new mysqli($dbServer, $dbUserName, $dbPassword);
+
+        // 检测连接
+        if ($con->connect_error) {
+            die("数据库连接失败: " . $con->connect_error);
+        }
+
+        // 初始化数据库选项
+        $sql = "SET NAMES 'UTF8'";
+        if ($con->query($sql) === TRUE) {} else {
+            die("设置数据库编码失败: " . $con->error);
+        }
+
+        $sql = "SET time_zone = '+8:00'";
+        if ($con->query($sql) === TRUE) {} else {
+            die("设置数据库时区(UTC+8)失败: " . $con->error);
+        }
+
+        return $con;
+    }
+
+    /**
+     * 关闭MySQL数据库连接
+     *
+     * @param mysqli $con MySQL连接对象
+     * @return void
+     */
+    private function closeDatabase($con)
+    {
         $con->close();
-    }
-
-    public function verifyDatabase()
-    {
-
-    }
-
-    private function initDatabaseConnection()
-    {
-
     }
 
 }

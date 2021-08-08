@@ -1,0 +1,8 @@
+# vendor 目录
+/vendor/
+
+# test 目录
+/test
+
+# 忽略.idea目录
+/.idea

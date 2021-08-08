@@ -12,8 +12,8 @@
     "minimum-stability": "dev",
     "require": {
 	    "php": ">=5.3",
-        "getsky/airac": ">=1.1"
-	},
+        "ext-mysqli": "*"
+    },
 	"autoload": {
         "psr-4": {
             "lianghou\\PFPXConverter\\": "src"

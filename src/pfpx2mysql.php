@@ -1,7 +1,7 @@
 <?php
 
 
-namespace lianghou\PFPXConverter;
+namespace brighthou\PFPXConverter;
 
 
 use mysqli;

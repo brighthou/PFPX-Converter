@@ -6,6 +6,14 @@ namespace brighthou\PFPXConverter;
 
 use mysqli;
 
+/**
+ * Class PFPX to MySQL
+ *
+ * 本类用于将PFPX的navdata导航数据文件转换为MySQL存储记录
+ *
+ * @version 0.0.1.210808
+ * @package brighthou\PFPXConverter
+ */
 class pfpx2mysql
 {
     /**

@@ -212,6 +212,25 @@ class pfpx2mysql
     }
 
     /**
+     * 删除指定的数据库
+     *
+     * @param $dbName string 数据库名称
+     */
+    function dropDatabase($dbName)
+    {
+        // 连接数据库
+        $con = $this->connectDatabase();
+
+        // 删除数据库
+        $sql = "DROP DATABASE `".$dbName."`;";
+        if ($con->query($sql) === TRUE) {} else {
+            die("删除数据库失败: " . $con->error);
+        }
+
+        $this->closeDatabase($con);
+    }
+
+    /**
      * 连接MySQL数据库
      *
      * @return mysqli MySQL连接对象，通常是$con
